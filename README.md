@@ -47,10 +47,12 @@ I am having success with madmax plotter, alternating between two SSDs.
 
 hdds is a list of your final plot destinations and also the drives where your legacy plots currently live.
 
-*NOTE* The following directory structure should exist on your hdds:
+*NOTE* Each hdd listed in the config needs to have a legacy_plots and pool_plots dirs:
 
-/mnt/hdd1/legacy_plots
-/mnt/hdd1/pool_plots
+```
+/mnt/<hddx>/legacy_plots
+/mnt/<hddx>/pool_plots
+```
 
 legacy_plots contains well, the legacy plots.
 pool_plots is where the chia-plotmover-rs will move the new plots to.
