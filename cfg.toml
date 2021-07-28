@@ -1,0 +1,13 @@
+[dirs]
+ssds = ["/mnt/ssd1/plots", "/mnt/ssd2/plots"]
+
+hdds = [
+    "/mnt/hdd1",
+    "/mnt/hdd2",
+    "/mnt/hdd3",
+    "/mnt/hdd4",
+    "/mnt/hdd5",
+    "/mnt/hdd6",
+    "/mnt/hdd7",
+    "/mnt/hdd8",
+]

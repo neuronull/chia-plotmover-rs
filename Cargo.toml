@@ -1,0 +1,13 @@
+[package]
+name = "plotmover-rs"
+version = "0.1.0"
+authors = ["neuronull@protonmail.com"]
+edition = "2018"
+
+[dependencies]
+config = "0.9"
+serde = { version = "1.0", features = ["derive"] }
+log = "0.4.11"
+log4rs = "0.8.1"
+sysinfo = "0.19.2"
+notify = "4.0.17"
