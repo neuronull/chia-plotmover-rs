@@ -79,13 +79,7 @@ $ ./target/debug/plotmover-rs
 2021-07-27 20:56:50 {INFO} no plots to remove in path /mnt/hdd2, removing it from the list
 2021-07-27 20:56:50 {INFO} copy plot "/mnt/ssd1/plots/plot-k32-2021-07-27-20-21-<pool_plot>.plot" to "/mnt/hdd3/pool_plots/plot-k32-2021-07-27-20-21-<pool_plot>.plot" ... 
 2021-07-27 21:05:00 {INFO}  ... completed
-2021-07-27 21:05:02 {INFO} checking for plot files in path /mnt/ssd1/plots
-2021-07-27 21:05:02 {INFO} checking for plot files in path /mnt/ssd1/plots
-2021-07-27 21:05:02 {INFO} checking for plot files in path /mnt/ssd2/plots
-2021-07-27 21:05:02 {INFO} checking for plot files in path /mnt/ssd2/plots
-2021-07-27 21:05:02 {INFO} checking for plot files in path /mnt/ssd2/plots
-2021-07-27 21:05:02 {INFO} checking for plot files in path /mnt/ssd1/plots
-2021-07-27 21:32:34 {INFO} checking for plot files in path /mnt/ssd2/plots
+
 ```
 
 # Support
