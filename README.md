@@ -22,6 +22,33 @@ But it does so only when new plots are available to take the space freed by remo
 
 Additionally, it does not rely on static sleep but instead is notified of filesystem events when a new plot is created.
 
+# Building
+
+If you have the Rust toolchain installed on your system, you can build from source.
+If you don't have it but want to build from source, follow the directions using rustup script here: https://www.rust-lang.org/tools/install
+
+```
+git clone https://github.com/neuronull/chia-plotmover-rs
+cd chia-plotmover-rs
+// edit cfg.rs for your system
+cargo build
+cargo run
+```
+
+Alternatively you can find the RELEASES page (https://github.com/neuronull/chia-plotmover-rs/releases)
+, and get the latest release. The required files are available for download there, including a pre-compiled x86 executable which is the program.
+
+```
+mkdir chia-plotmover-rs
+cd chia-plotmover-rs
+wget https://github.com/neuronull/chia-plotmover-rs/releases/download/v0.1/cfg.toml
+wget https://github.com/neuronull/chia-plotmover-rs/releases/download/v0.1/logcfg.yml
+wget https://github.com/neuronull/chia-plotmover-rs/releases/download/v0.1/plotmover-rs
+// edit cfg.rs for your system
+chmod +x plotmover-rs
+./plotmover-rs
+```
+
 # Usage
 
 This is the config file:
@@ -56,6 +83,16 @@ hdds is a list of your final plot destinations and also the drives where your le
 
 legacy_plots contains well, the legacy plots.
 pool_plots is where the chia-plotmover-rs will move the new plots to.
+
+For example consider /mnt/hdd1 , the following commands create the necessary directories and write permissions.
+This assumes that the User making these directory permissions is the same who will run the chia-plotmover-rs.
+
+```
+sudo mkdir /mnt/hdd1/legacy_plots
+sudo mkdir /mnt/hdd1/pool_plots
+sudo chmod +w /mnt/hdd1/legacy_plots
+sudo chmod +w /mnt/hdd1/legacy_plots
+```
 
 # Example
 
