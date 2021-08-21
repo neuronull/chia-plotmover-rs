@@ -68,7 +68,7 @@ fn get_free_space(hdds: &mut Vec<String>, plot_sz: u64) -> Result<&str, Box<dyn 
         hdds.retain(|path_| path != path_);
         hdd_idx = hdd_idx - 1;
     }
-    if hdd_idx == -1 {
+    if hdd_idx < 0 {
         panic!("no plots were available to remove! are we done re-plotting ?!?!?!")
     }
     Ok(&hdds[hdd_idx as usize])
