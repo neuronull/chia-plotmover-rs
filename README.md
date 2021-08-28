@@ -99,7 +99,7 @@ sudo chmod +w /mnt/hdd1/legacy_plots
 
 ### Options
 
-- only_replace : If you only want to replace legacy plots and do not want to fill remaining space on hdds with new pool plots, then set the only_replace option to true
+- only_replace (default=false): If you only want to replace legacy plots and do not want to fill remaining space on hdds with new pool plots, then set the only_replace option to true
 
 # Example
 
