@@ -67,6 +67,9 @@ hdds = [
     "/mnt/hdd7",
     "/mnt/hdd8",
 ]
+
+[options]
+only_replace = false
 ```
 
 Populate ssds with a list of the directories where new plots are to be found. These are the plots you want to keep.
@@ -93,6 +96,10 @@ sudo mkdir /mnt/hdd1/pool_plots
 sudo chmod +w /mnt/hdd1/legacy_plots
 sudo chmod +w /mnt/hdd1/legacy_plots
 ```
+
+### Options
+
+- only_replace : If you only want to replace legacy plots and do not want to fill remaining space on hdds with new pool plots, then set the only_replace option to true
 
 # Example
 
