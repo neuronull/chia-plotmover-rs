@@ -9,6 +9,16 @@ use std::{
     fs::{self, DirEntry},
 };
 use sysinfo::{DiskExt, System, SystemExt};
+#[macro_use]
+extern crate lazy_static;
+
+lazy_static! {
+    // parse config
+    static ref CFG : Cfg  = Cfg::new().unwrap();
+    static ref SSDS : &'static Vec<String> = &CFG.dirs.ssds;
+    static ref HDDS : &'static Vec<String> = &CFG.dirs.hdds;
+    static ref ONLY_REPLACE : bool = CFG.options.only_replace.unwrap_or(false);
+}
 
 // check if any hdd has space for the new plot
 fn hdd_has_space(hdd: &str, sys: &System, plot_sz: u64) -> bool {
@@ -26,30 +36,27 @@ fn hdd_has_space(hdd: &str, sys: &System, plot_sz: u64) -> bool {
     panic!("hdd {} not found in system disks!", hdd);
 }
 
-fn get_free_space(hdds: &mut Vec<String>, plot_sz: u64) -> Result<&str, Box<dyn Error>> {
-    let mut remove_dirs = vec![];
-
+fn get_free_space(plot_sz: u64) -> Result<&'static str, Box<dyn Error>> {
     let mut hdd_idx: i8 = -1;
     let sys = System::new_all();
 
     // if any drive has space, use it
-    for (i, path) in hdds.iter().enumerate() {
-        if hdd_has_space(&path, &sys, plot_sz) {
-            info!("hdd {:?} has space, using that", path);
-            return Ok(&hdds[i]);
+    if *ONLY_REPLACE == false {
+        for (i, path) in HDDS.iter().enumerate() {
+            if hdd_has_space(&path, &sys, plot_sz) {
+                info!("hdd {:?} has space, using that", path);
+                return Ok(&HDDS[i]);
+            }
         }
     }
 
     // otherwise, remove a plot
-    for (i, path) in hdds.iter().enumerate() {
+    for (i, path) in HDDS.iter().enumerate() {
         let legacy_path = format!("{}{}", path, "/legacy_plots");
 
         let legacy_plots = fs::read_dir(&legacy_path)?;
-        let remove_plot = legacy_plots.into_iter().last();
-        if remove_plot.is_none() {
-            remove_dirs.push(hdds[i].clone());
-        } else {
-            let path_buf = remove_plot.unwrap()?.path();
+        if let Some(remove_plot) = legacy_plots.into_iter().last() {
+            let path_buf = remove_plot?.path();
             let res = fs::remove_file(&path_buf);
             if res.is_err() {
                 error!("unable to remove {:?} err= {}", &path_buf, res.unwrap_err());
@@ -60,26 +67,18 @@ fn get_free_space(hdds: &mut Vec<String>, plot_sz: u64) -> Result<&str, Box<dyn 
             break;
         }
     }
-    for path in &remove_dirs {
-        info!(
-            "no plots to remove in path {}, removing it from the list",
-            path
-        );
-        hdds.retain(|path_| path != path_);
-        hdd_idx = hdd_idx - 1;
-    }
     if hdd_idx < 0 {
         panic!("no plots were available to remove! are we done re-plotting ?!?!?!")
     }
-    Ok(&hdds[hdd_idx as usize])
+    Ok(&HDDS[hdd_idx as usize])
 }
 
-fn move_file(source: &DirEntry, hdds: &mut Vec<String>) {
+fn move_file(source: &DirEntry) {
     let source_file = String::from(source.file_name().to_str().unwrap());
     let source_path = String::from(source.path().to_str().unwrap());
     let source_sz = fs::metadata(&source_path).unwrap().len();
 
-    let free_path = match get_free_space(hdds, source_sz) {
+    let free_path = match get_free_space(source_sz) {
         Ok(path) => path,
         Err(e) => {
             error!("No free space found, aborting the move! err: {}", e);
@@ -111,18 +110,18 @@ fn move_file(source: &DirEntry, hdds: &mut Vec<String>) {
     }
 }
 
-fn check_path(hdds: &mut Vec<String>, path: &str) {
+fn check_path(path: &str) {
     info!("checking for plot files in path {}", path);
     let files = fs::read_dir(path).unwrap();
     files
         .filter_map(Result::ok)
         .filter(|f| f.path().extension().unwrap_or(&OsString::from("foo")) == "plot")
-        .for_each(|f| move_file(&f, hdds));
+        .for_each(|f| move_file(&f));
 }
 
-fn check_all(ssds: &Vec<String>, hdds: &mut Vec<String>) {
-    for path in ssds {
-        check_path(hdds, path);
+fn check_all() {
+    for path in SSDS.iter() {
+        check_path(path);
     }
 }
 
@@ -130,20 +129,15 @@ fn main() {
     // init logging
     log4rs::init_file("logcfg.yml", Default::default()).unwrap();
 
-    // parse config
-    let cfg = Cfg::new().unwrap();
-    let ssds = cfg.dirs.ssds;
-    let mut hdds = cfg.dirs.hdds;
+    check_all();
 
-    check_all(&ssds, &mut hdds);
-
-    info!("monitoring these dirs for new plots {:?}", &ssds);
+    info!("monitoring these dirs for new plots {:?}", &*SSDS);
 
     // setup the channel and watch the dirs for new plots
     let (tx, rx) = channel();
     let mut watcher = raw_watcher(tx).unwrap();
 
-    for path in &ssds {
+    for path in SSDS.iter() {
         watcher.watch(path, RecursiveMode::NonRecursive).unwrap();
     }
 
@@ -154,7 +148,7 @@ fn main() {
                 op: Ok(_op),
                 cookie: _,
             }) => {
-                check_path(&mut hdds, path.parent().unwrap().to_str().unwrap());
+                check_path(path.parent().unwrap().to_str().unwrap());
             }
             Ok(event) => println!("broken event: {:?}", event),
             Err(e) => println!("watch error: {:?}", e),

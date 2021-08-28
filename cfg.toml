@@ -11,3 +11,6 @@ hdds = [
     "/mnt/hdd7",
     "/mnt/hdd8",
 ]
+
+[options]
+only_replace = false

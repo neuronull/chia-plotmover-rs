@@ -8,9 +8,15 @@ pub struct Dirs {
 }
 
 #[derive(Debug, Default, Deserialize)]
+pub struct Options {
+    pub only_replace: Option<bool>,
+}
+
+#[derive(Debug, Default, Deserialize)]
 pub struct Cfg {
     //pub general: General,
     pub dirs: Dirs,
+    pub options: Options,
 }
 
 impl Cfg {
