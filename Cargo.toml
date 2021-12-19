@@ -1,7 +1,6 @@
 [package]
 name = "chia-plotmover-rs"
 version = "0.1.0"
-authors = ["neuronull@protonmail.com"]
 edition = "2018"
 
 [dependencies]
