@@ -125,13 +125,3 @@ $ ./target/debug/plotmover-rs
 2021-07-27 21:05:00 {INFO}  ... completed
 
 ```
-
-# Support
-
-XCH: xch1ahj4fpvy5a9jreg03k5hg7s7zau6vndns2u8mav37r4sez6uafqq86r6rx
-
-ETH-ERC20: 0x88Ef3125e6C5520487731D247b7aeBc78C62CF20
-
-LTC: ltc1qxnwz7rfwk6e56dn3umfeg6g9gxeyfh2cf6vqjl
-
-BTC: bc1q7huxnpqf93ejh03y5w0gpxrrrrdfphssd0hdle
